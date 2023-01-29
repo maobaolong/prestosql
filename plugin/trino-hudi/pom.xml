@@ -463,6 +463,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+                <configuration>
+                    <ignoredClassPatterns>
+                        <ignoredClassPattern>software.amazon.ion.*$</ignoredClassPattern>
+                    </ignoredClassPatterns>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

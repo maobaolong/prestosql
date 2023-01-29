@@ -520,6 +520,16 @@
                     </ignoredResourcePatterns>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.basepom.maven</groupId>
+                <artifactId>duplicate-finder-maven-plugin</artifactId>
+                <configuration>
+                    <ignoredClassPatterns>
+                        <ignoredClassPattern>software.amazon.ion.*$</ignoredClassPattern>
+                    </ignoredClassPatterns>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

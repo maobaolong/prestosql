@@ -15,6 +15,7 @@ package io.trino.filesystem.hdfs;
 
 import io.trino.filesystem.TrinoInput;
 import io.trino.filesystem.TrinoInputFile;
+import io.trino.filesystem.hdfs.cache.CachingFileSystem;
 import io.trino.hdfs.HdfsContext;
 import io.trino.hdfs.HdfsEnvironment;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -32,11 +33,11 @@ class HdfsInputFile
         implements TrinoInputFile
 {
     private final String path;
-    private final HdfsEnvironment environment;
-    private final HdfsContext context;
-    private final Path file;
+    protected final HdfsEnvironment environment;
+    protected final HdfsContext context;
+    protected final Path file;
     private Long length;
-    private FileStatus status;
+    protected FileStatus status;
 
     public HdfsInputFile(String path, Long length, HdfsEnvironment environment, HdfsContext context)
     {
@@ -53,7 +54,13 @@ class HdfsInputFile
             throws IOException
     {
         FileSystem fileSystem = environment.getFileSystem(context, file);
-        FSDataInputStream input = environment.doAs(context.getIdentity(), () -> fileSystem.open(file));
+        FSDataInputStream input = environment.doAs(context.getIdentity(), () -> {
+            if (fileSystem instanceof CachingFileSystem) {
+                CachingFileSystem cachingFileSystem = (CachingFileSystem) fileSystem;
+                return cachingFileSystem.open(file, lazyStatus());
+            }
+            return fileSystem.open(file);
+        });
         return new HdfsInput(input, this);
     }
 
@@ -88,7 +95,7 @@ class HdfsInputFile
         return path;
     }
 
-    private FileStatus lazyStatus()
+    protected FileStatus lazyStatus()
             throws IOException
     {
         if (status == null) {

@@ -40,11 +40,11 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
 
-class HdfsFileSystem
+public class HdfsFileSystem
         implements TrinoFileSystem
 {
-    private final HdfsEnvironment environment;
-    private final HdfsContext context;
+    protected final HdfsEnvironment environment;
+    protected final HdfsContext context;
 
     public HdfsFileSystem(HdfsEnvironment environment, HdfsContext context)
     {
