@@ -43,6 +43,10 @@ public class NodeSchedulerConfig
         NODE, STAGE
     }
 
+    public enum CacheAffinityPolicy {
+        NONE, HARD, SOFT
+    }
+
     private int minCandidates = 10;
     private boolean includeCoordinator = true;
     private int maxSplitsPerNode = 100;
@@ -54,6 +58,7 @@ public class NodeSchedulerConfig
     private int maxUnacknowledgedSplitsPerTask = 500;
     private Duration allowedNoMatchingNodePeriod = new Duration(2, TimeUnit.MINUTES);
     private NodeAllocatorType nodeAllocatorType = NodeAllocatorType.BIN_PACKING;
+    private CacheAffinityPolicy cacheAffinityPolicy = CacheAffinityPolicy.NONE;
 
     @NotNull
     public NodeSchedulerPolicy getNodeSchedulerPolicy()
@@ -228,5 +233,17 @@ public class NodeSchedulerConfig
                 return NodeAllocatorType.BIN_PACKING;
         }
         throw new IllegalArgumentException("Unknown node allocator type: " + nodeAllocatorType);
+    }
+
+    public CacheAffinityPolicy getCacheAffinityPolicy()
+    {
+        return cacheAffinityPolicy;
+    }
+
+    @Config("node-scheduler.cache-affinity-policy")
+    public NodeSchedulerConfig setCacheAffinityPolicy(CacheAffinityPolicy cacheAffinityPolicy)
+    {
+        this.cacheAffinityPolicy = cacheAffinityPolicy;
+        return this;
     }
 }
