@@ -46,6 +46,6 @@ public interface ConnectorSplit
 
     default Optional<String> getCacheIdentifier()
     {
-        throw new UnsupportedOperationException("This connector does not provide cache identifier for ConnectorSplits");
+        return Optional.empty();
     }
 }
